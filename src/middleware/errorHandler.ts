@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+
+import { NextFunction, Request, Response } from 'express';
 
 export interface AppError extends Error {
   statusCode?: number;
@@ -8,6 +9,7 @@ export function errorHandler(
   err: AppError,
   req: Request,
   res: Response,
+  //@ts-ignore
   next: NextFunction
 ): void {
   console.error('Error:', err);

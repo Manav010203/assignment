@@ -1,20 +1,34 @@
 import { Router, Request, Response } from 'express';
 import { TaskService } from '../services/taskService';
-import { SyncService } from '../services/syncService';
+// import { SyncService } from '../services/syncService';
 import { Database } from '../db/database';
+import { z } from 'zod';
+export const TaskSchema = z.object({
+  id: z.string().uuid().optional(), 
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  completed: z.boolean().default(false),
+  created_at: z.date().optional(),
+  updated_at: z.date().optional(),
+  is_deleted: z.boolean().default(false),
+  sync_status: z.enum(["pending", "synced", "error"]).optional(),
+  server_id: z.string().optional(),
+  last_synced_at: z.date().optional(),
+});
 
 export function createTaskRouter(db: Database): Router {
   const router = Router();
   const taskService = new TaskService(db);
-  const syncService = new SyncService(db, taskService);
+  // const syncService = new SyncService(db, taskService);
 
   // Get all tasks
-  router.get('/', async (req: Request, res: Response) => {
+  router.get('/', async (res: Response) => {
     try {
       const tasks = await taskService.getAllTasks();
-      res.json(tasks);
+      return res.status(200).json(tasks);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch tasks' });
+      console.error(error);
+      return res.status(500).json({ error: 'Failed to fetch tasks' });
     }
   });
 
@@ -25,9 +39,9 @@ export function createTaskRouter(db: Database): Router {
       if (!task) {
         return res.status(404).json({ error: 'Task not found' });
       }
-      res.json(task);
+      return res.json(task);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch task' });
+      return res.status(500).json({ error: 'Failed to fetch task' });
     }
   });
 
@@ -37,7 +51,24 @@ export function createTaskRouter(db: Database): Router {
     // 1. Validate request body
     // 2. Call taskService.createTask()
     // 3. Return created task
-    res.status(501).json({ error: 'Not implemented' });
+    const parsed =TaskSchema.safeParse(req.body);
+    if (!parsed.success) {
+    return res.status(400).json({
+      error: "Invalid request body",
+      details: parsed.error.errors,
+    });
+  }
+  const body = parsed.data;
+  try{
+    const task = taskService.createTask(body);   
+    res.status(201).json(task);
+    return task;
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({ error: 'something went wrong' });
+  }
+    
+    
   });
 
   // Update task
@@ -47,7 +78,19 @@ export function createTaskRouter(db: Database): Router {
     // 2. Call taskService.updateTask()
     // 3. Handle not found case
     // 4. Return updated task
-    res.status(501).json({ error: 'Not implemented' });
+    const {id} = req.params;
+    const body = TaskSchema.partial(req.body);
+    try{
+      const updating =await taskService.updateTask(id,body);
+      if(!updating){
+        res.status(404).json({error:"Task not found"});
+      }
+      res.status(200).json(updating);
+    }catch(err){
+      console.error(err);
+      res.status(500).json("Something went wrong");
+    }
+    // res.status(501).json({ error: 'Not implemented' });
   });
 
   // Delete task
@@ -56,7 +99,18 @@ export function createTaskRouter(db: Database): Router {
     // 1. Call taskService.deleteTask()
     // 2. Handle not found case
     // 3. Return success response
-    res.status(501).json({ error: 'Not implemented' });
+    const {id}=req.params;
+    try{
+      const deleting = await taskService.deleteTask(id);
+      if(!deleting){
+        res.status(404).json({error:"task not found"});
+      }
+      res.status(200).json("task deleted");
+    }catch(err){
+      console.error(err);
+      res.status(500).json("Something went wrong");
+    }
+    // res.status(501).json({ error: 'Not implemented'q });
   });
 
   return router;
