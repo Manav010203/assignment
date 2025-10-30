@@ -184,7 +184,7 @@ const SYNC_BATCH_SIZE = parseInt(process.env.SYNC_BATCH_SIZE || "10", 10);
       console.error("Conflict resolution failed:", err);
     return serverTask;
     }
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   private async updateSyncStatus(taskId: string, status: 'synced' | 'error', serverData?: Partial<Task>): Promise<void> {

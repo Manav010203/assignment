@@ -143,7 +143,7 @@ export class TaskService {
       data
     ])
     return true;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   async getTask(id: string): Promise<Task | null> {
@@ -155,7 +155,7 @@ export class TaskService {
       return null;
     }
     return task;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   async getAllTasks(): Promise<Task[]> {
@@ -167,7 +167,7 @@ export class TaskService {
       return [];
     }
     return all_deleted_tasks;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   async getTasksNeedingSync(): Promise<Task[]> {
@@ -177,6 +177,6 @@ export class TaskService {
       return [];
     }
     return sync_all_tasks;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 }

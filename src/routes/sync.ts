@@ -18,15 +18,15 @@ export function createSyncRouter(db: Database): Router {
     try{
     const connectivity =await syncService.checkConnectivity();
     if(!connectivity){
-      res.status(401).json("Unable to connect");
+      return res.status(401).json("Unable to connect");
     }
     const sync =await syncService.sync();
     if(!sync){
-      res.status(401).json("sync error");
+      return res.status(401).json("sync error");
     }
   }catch(err){
     console.error(err);
-    res.status(500).json("something went wrong");
+    return res.status(500).json("something went wrong");
   }
     // res.status(501).json({ error: 'Not implemented' });
   });

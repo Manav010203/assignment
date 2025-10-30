@@ -83,12 +83,12 @@ export function createTaskRouter(db: Database): Router {
     try{
       const updating =await taskService.updateTask(id,body);
       if(!updating){
-        res.status(404).json({error:"Task not found"});
+        return res.status(404).json({error:"Task not found"});
       }
       res.status(200).json(updating);
     }catch(err){
       console.error(err);
-      res.status(500).json("Something went wrong");
+      return res.status(500).json("Something went wrong");
     }
     // res.status(501).json({ error: 'Not implemented' });
   });
@@ -103,12 +103,12 @@ export function createTaskRouter(db: Database): Router {
     try{
       const deleting = await taskService.deleteTask(id);
       if(!deleting){
-        res.status(404).json({error:"task not found"});
+        return res.status(404).json({error:"task not found"});
       }
-      res.status(200).json("task deleted");
+      return res.status(200).json("task deleted");
     }catch(err){
       console.error(err);
-      res.status(500).json("Something went wrong");
+      return res.status(500).json("Something went wrong");
     }
     // res.status(501).json({ error: 'Not implemented'q });
   });
