@@ -24,6 +24,7 @@ export function createSyncRouter(db: Database): Router {
     if(!sync){
       return res.status(401).json("sync error");
     }
+    return sync;
   }catch(err){
     console.error(err);
     return res.status(500).json("something went wrong");
@@ -32,14 +33,14 @@ export function createSyncRouter(db: Database): Router {
   });
 
   // Check sync status
-  router.get('/status', async ( res: Response) => {
+  router.get('/status', async (_req: Request, res: Response) => {
     // TODO: Implement sync status endpoint
     // 1. Get pending sync count
     // 2. Get last sync timestamp
     // 3. Check connectivity
     // 4. Return status summary
     try{
-    
+    // const body = req.body;
    const pending = await db.get(
       `SELECT COUNT(*) as count FROM sync_queue`
     );
@@ -121,10 +122,13 @@ export function createSyncRouter(db: Database): Router {
   });
 
   // Health check endpoint
-  router.get('/health', async ( res: Response) => {
-    
-    return res.json({ status: 'ok', timestamp: new Date() });
+  router.get('/health', async (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date(),
+    path: req.originalUrl,
   });
+});
 
   return router;
 }

@@ -22,7 +22,7 @@ export function createTaskRouter(db: Database): Router {
   // const syncService = new SyncService(db, taskService);
 
   // Get all tasks
-  router.get('/', async (res: Response) => {
+  router.get('/', async (_req:Request,res: Response) => {
     try {
       const tasks = await taskService.getAllTasks();
       return res.status(200).json(tasks);
@@ -85,7 +85,7 @@ export function createTaskRouter(db: Database): Router {
       if(!updating){
         return res.status(404).json({error:"Task not found"});
       }
-      res.status(200).json(updating);
+      return res.status(200).json(updating);
     }catch(err){
       console.error(err);
       return res.status(500).json("Something went wrong");
