@@ -12,6 +12,6 @@ coverage/
 .vscode/
 .idea/
 *.sqlite
-*.sqlite3
+
 *.db
 .vitest-result.json
