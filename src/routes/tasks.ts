@@ -55,7 +55,7 @@ export function createTaskRouter(db: Database): Router {
     if (!parsed.success) {
     return res.status(400).json({
       error: "Invalid request body",
-      details: parsed.error.errors,
+      details: parsed.error,
     });
   }
   const body = parsed.data;
