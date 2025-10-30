@@ -26,8 +26,8 @@ export class SyncService {
     // 6. Return sync result summary
    
 const SYNC_BATCH_SIZE = parseInt(process.env.SYNC_BATCH_SIZE || "10", 10);
-//@ts-ignore
-  const all_items = await this.db.all<SyncQueueItem[]>(`SELECT * FROM sync_queue`);
+
+  const all_items = await this.db.all(`SELECT * FROM sync_queue`);
 
   if (!all_items || all_items.length === 0) {
     return {
