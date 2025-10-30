@@ -57,7 +57,7 @@ export class TaskService {
       ])
 
       return task;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
@@ -103,7 +103,7 @@ export class TaskService {
         data
       ])
       return updatedValues;
-    throw new Error('Not implemented');
+    // throw new Error('Not implemented');
   }
 
   async deleteTask(id: string): Promise<boolean> {
